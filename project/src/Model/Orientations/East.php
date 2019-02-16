@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model\Orientations;
 
-use App\Model\Orientation;
-
 class East implements Orientation
 {
     public function isNorth(): bool

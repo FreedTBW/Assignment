@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Exceptions\NoOrientationException;
-use App\Constants\Orientation;
+use App\Model\Orientations\Orientation;
+use App\Model\Orientations\East;
+use App\Model\Orientations\North;
+use App\Model\Orientations\South;
+use App\Model\Orientations\West;
+
 
 class Rover
 {
@@ -17,7 +21,7 @@ class Rover
     public function __construct(
         int $xAxis,
         int $yAxis,
-        string $orientation,
+        Orientation $orientation,
         Grid $grid
     )
     {
@@ -37,7 +41,7 @@ class Rover
         return $this->yAxis;
     }
 
-    public function getOrientation(): string
+    public function getOrientation(): Orientation
     {
         return $this->orientation;
     }
@@ -49,74 +53,58 @@ class Rover
 
     public function turnLeft(): self
     {
-        switch ($this->orientation){
-            case Orientation::NORTH:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::WEST,
-                    $this->grid
-                );
-            case Orientation::WEST:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::SOUTH,
-                    $this->grid
-                );
-            case Orientation::SOUTH:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::EAST,
-                    $this->grid
-                );
-            case Orientation::EAST:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::NORTH,
-                    $this->grid
-                );
-            default:
-                throw new NoOrientationException();
+        $orientation = $this->orientation;
+
+        if ($this->orientation->isNorth()) {
+            $orientation = new West();
         }
+
+        if ($this->orientation->isWest()) {
+            $orientation = new South();
+        }
+
+        if ($this->orientation->isSouth()) {
+            $orientation = new East();
+        }
+
+        if ($this->orientation->isEast()) {
+            $orientation = new North();
+        }
+
+        return new self(
+            $this->getXAxis(),
+            $this->getYAxis(),
+            $orientation,
+            $this->grid
+        );
     }
 
-    public function turnRight()
+    public function turnRight(): self
     {
-        switch ($this->orientation){
-            case Orientation::NORTH:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::EAST,
-                    $this->grid
-                );
-            case Orientation::EAST:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::SOUTH,
-                    $this->grid
-                );
-            case Orientation::SOUTH:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::WEST,
-                    $this->grid
-                );
-            case Orientation::WEST:
-                return new self(
-                    $this->getXAxis(),
-                    $this->getYAxis(),
-                    Orientation::NORTH,
-                    $this->grid
-                );
-            default:
-                throw new NoOrientationException();
+        $orientation = $this->orientation;
+
+        if ($this->orientation->isNorth()) {
+            $orientation = new East();
         }
+
+        if ($this->orientation->isEast()) {
+            $orientation = new South();
+        }
+
+        if ($this->orientation->isSouth()) {
+            $orientation = new West();
+        }
+
+        if ($this->orientation->isWest()) {
+            $orientation = new North();
+        }
+
+        return new self(
+            $this->getXAxis(),
+            $this->getYAxis(),
+            $orientation,
+            $this->grid
+        );
     }
 
     public function move(): self
@@ -124,33 +112,28 @@ class Rover
         $xAxis = $this->xAxis;
         $yAxis = $this->yAxis;
 
-        switch ($this->orientation){
-            case Orientation::NORTH:
-                if ($this->yAxis + 1 <= $this->grid->getMaxY()) {
-                    $yAxis = $this->yAxis + 1;
-                }
+        if ($this->orientation->isNorth()) {
+            if ($this->yAxis + 1 <= $this->grid->getMaxY()) {
+                $yAxis = $this->yAxis + 1;
+            }
+        }
 
-                break;
-            case Orientation::SOUTH:
-                if ($this->yAxis - 1 >= 0) {
-                    $yAxis = $this->yAxis - 1;
-                }
+        if ($this->orientation->isEast()) {
+            if ($this->xAxis + 1 <= $this->grid->getMaxX()) {
+                $xAxis = $this->xAxis + 1;
+            }
+        }
 
-                break;
-            case Orientation::EAST:
-                if ($this->xAxis + 1 <= $this->grid->getMaxX()) {
-                    $xAxis = $this->xAxis + 1;
-                }
+        if ($this->orientation->isSouth()) {
+            if ($this->yAxis - 1 >= 0) {
+                $yAxis = $this->yAxis - 1;
+            }
+        }
 
-                break;
-            case Orientation::WEST:
-                if ($this->xAxis - 1 >= 0) {
-                    $xAxis = $this->xAxis - 1;
-                }
-
-                break;
-            default:
-                throw new NoOrientationException();
+        if ($this->orientation->isWest()) {
+            if ($this->xAxis - 1 >= 0) {
+                $xAxis = $this->xAxis - 1;
+            }
         }
 
         return new self(
