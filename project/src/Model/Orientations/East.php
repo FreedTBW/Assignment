@@ -24,4 +24,9 @@ class East implements Orientation
     {
         return false;
     }
+
+    public function serialize(): string
+    {
+        return 'E';
+    }
 }

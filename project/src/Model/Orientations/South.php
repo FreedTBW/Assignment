@@ -24,4 +24,9 @@ class South implements Orientation
     {
         return false;
     }
+
+    public function serialize(): string
+    {
+        return 'S';
+    }
 }

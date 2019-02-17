@@ -10,4 +10,5 @@ interface Orientation
     public function isEast(): bool;
     public function isSouth(): bool;
     public function isWest(): bool;
+    public function serialize(): string;
 }

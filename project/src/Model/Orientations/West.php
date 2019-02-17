@@ -24,4 +24,9 @@ class West implements Orientation
     {
         return true;
     }
+
+    public function serialize(): string
+    {
+        return 'W';
+    }
 }

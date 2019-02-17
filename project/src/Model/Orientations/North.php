@@ -24,4 +24,9 @@ class North implements Orientation
     {
         return false;
     }
+
+    public function serialize(): string
+    {
+        return 'N';
+    }
 }
