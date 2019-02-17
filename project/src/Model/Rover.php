@@ -143,4 +143,11 @@ class Rover
             $this->grid
         );
     }
+
+    public function serializeState(): string
+    {
+        return $this->xAxis . ' ' .
+        $this->yAxis . ' ' .
+        $this->orientation->serialize();
+    }
 }
